@@ -5,3 +5,4 @@ UCI HAR Dataset/
 UCI HAR Dataset.zip
 *.Rproj
 .data/*
+data/dataset.zip
