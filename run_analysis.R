@@ -22,7 +22,7 @@ subject_test <- read.table("./data/UCI HAR Dataset/test/subject_test.txt")
 features <- read.table("./data/UCI HAR Dataset/features.txt")
 
 # Reading activity labels variable
-activity_labels = read.table("./data/UCI HAR Dataset/activity_labels.txt")
+activityLabels = read.table("./data/UCI HAR Dataset/activity_labels.txt")
 
 # assign column names to train
 colnames(x_train) <- features[, 2]
@@ -35,7 +35,7 @@ colnames(y_test) <- "activity_id"
 colnames(subject_test) <- "subject_id"
 
 # asign column names to activityLabels (V1 and V2)
-colnames(activityLabels) <- c("activity_id", "activity_type")
+colnames(activityLabels) <- c("activity_id", "activity_label")
 
 # merging data merge data train
 merge_train <- cbind(y_train, subject_train, x_train)
@@ -53,11 +53,20 @@ mean_and_std <- (grepl("activity_id", combined_colnames) | grepl("subject_id", c
 set_of_mean_and_std <- combined[, mean_and_std == TRUE]
 
 # using descriptive activity name
-set_with_activity_names <- merge(set_of_mean_and_std, activity_labels, by = "activity_id",
+set_with_activity_names <- merge(set_of_mean_and_std, activityLabels, by = "activity_id",
     all.x = TRUE)
 
 # making second tidy dataset
 tidy_set2 <- aggregate(. ~ subject_id + activity_id, set_with_activity_names, mean)
+#labels
+tidy_set2$activity_label[tidy_set2$activity_label == 1] <- "walking"
+tidy_set2$activity_label[tidy_set2$activity_label == 2] <- "walking upstairs"
+tidy_set2$activity_label[tidy_set2$activity_label == 3] <- "walking downstairs"
+tidy_set2$activity_label[tidy_set2$activity_label == 4] <- "sitting"
+tidy_set2$activity_label[tidy_set2$activity_label == 5] <- "standing"
+tidy_set2$activity_label[tidy_set2$activity_label == 6] <- "laying"
+
+#order
 tidy_set2 <- tidy_set2[order(tidy_set2$subject_id, tidy_set2$activity_id), ]
 
 # Write to txt file
